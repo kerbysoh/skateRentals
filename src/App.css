@@ -2,6 +2,9 @@
   text-align: center;
   align-items: center;
 }
+.errMsg {
+  color: red;
+}
 
 .App-logo {
   height: 40vmin;

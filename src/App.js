@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 function App() {
+  const [errMsg, setErrMsg] = useState('')
   const increment = firebase.firestore.FieldValue.increment(1)
   const decrement = firebase.firestore.FieldValue.increment(-1)
   const [amount, setAmount] = useState('')
@@ -51,14 +52,33 @@ function App() {
     })
   }
   const handleCheckOutTuesday = () => {
-    db.collection('skateRentals').doc(currSkate).update({
-      AmountTue: decrement
+    skate.map((each) => {
+      if (each.id === currSkate) {
+        if(each.AmountTue > 0) {
+          db.collection('skateRentals').doc(currSkate).update({
+            AmountTue: decrement
+          })
+          setErrMsg('Checked out Successfully')
+        } else {
+          setErrMsg('Skates not available')
+        }
+      }
     })
+    
   }
   const handleCheckOutWednesday = () => {
-    db.collection('skateRentals').doc(currSkate).update({
-      AmountTue: decrement
-    })
+    skate.map((each) => {
+      if (each.id === currSkate) {
+          if(each.AmountWed > 0) {
+            db.collection('skateRentals').doc(currSkate).update({
+              AmountWed: decrement
+            })
+            setErrMsg('Checked out Successfully')
+          } else {
+            setErrMsg('Skates not available')
+          }
+        }
+      })
   }
 
   useEffect(() => {
@@ -97,6 +117,8 @@ function App() {
     <Button className = {classes.button} variant = 'contained' color = 'primary' onClick = {() => {handleCheckOutWednesday()}}>Check out wednesday</Button>
     <Button className = {classes.button} variant = 'contained' color = 'primary' onClick = {() => {handleCheckInTuesday()}}>Check in tuesday</Button>
     <Button className = {classes.button} variant = 'contained' color = 'primary' onClick = {() => {handleCheckInWednesday()}}>Check in wednesday</Button>
+    {amount}
+    <h4 className = 'errMsg'>{errMsg}</h4>
     </div>
   );
 }
